@@ -1,0 +1,19 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  team: MyString
+  Elo: 1
+  active: false
+  wins: 1
+  losses: 1
+  broken: false
+
+two:
+  name: MyString
+  team: MyString
+  Elo: 1
+  active: false
+  wins: 1
+  losses: 1
+  broken: false

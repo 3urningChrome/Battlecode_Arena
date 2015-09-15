@@ -1,0 +1,25 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  team: MyString
+  teamA: MyString
+  teamB: MyString
+  map: MyString
+  turns: MyString
+  scoreA: MyString
+  scoreB: MyString
+  winner: MyString
+  loser: MyString
+  file: MyString
+
+two:
+  team: MyString
+  teamA: MyString
+  teamB: MyString
+  map: MyString
+  turns: MyString
+  scoreA: MyString
+  scoreB: MyString
+  winner: MyString
+  loser: MyString
+  file: MyString

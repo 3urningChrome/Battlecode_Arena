@@ -1,0 +1,52 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @competitor.name %>
+</p>
+
+<p>
+  <strong>Team:</strong>
+  <%= @competitor.team %>
+</p>
+
+<p>
+  <strong>Elo:</strong>
+  <%= @competitor.Elo %>
+</p>
+
+<p>
+  <strong>Active:</strong>
+  <%= @competitor.active %>
+</p>
+
+<p>
+  <strong>Wins:</strong>
+  <%= @competitor.wins %>
+</p>
+
+<p>
+  <strong>Losses:</strong>
+  <%= @competitor.losses %>
+</p>
+
+<p>
+  <strong> Uploaded on:</strong>
+  <%= @competitor.created_at %>
+</p>
+
+<p>
+  <strong><%= "Matches: " %></strong>
+</p>
+<p>
+  <%= render 'games/index' %>
+</p>
+
+<p>
+  <% if @competitor.active != true %>
+    <%= form_for @competitor do |t| %>
+      <%= t.hidden_field :active, :value=>true %>
+      <%= t.submit "Reactivate Submission" %>
+    <% end %>
+  <% end %>
+</p>

@@ -1,0 +1,57 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Game requested by:</strong>
+  <%= @game.team %>
+</p>
+
+<p>
+  <strong>Team A:</strong>
+  <%= @game.teamA %>
+</p>
+
+<p>
+  <strong>Team B:</strong>
+  <%= @game.teamB %>
+</p>
+
+<p>
+  <strong>Map:</strong>
+  <%= @game.map %>
+</p>
+
+<p>
+  <strong>Turns:</strong>
+  <%= @game.turns %>
+</p>
+
+<p>
+  <strong>Score A:</strong>
+  <%= @game.scoreA %>
+</p>
+
+<p>
+  <strong>Score B:</strong>
+  <%= @game.scoreB %>
+</p>
+
+<p>
+  <strong>Winner:</strong>
+  <%= @game.winner %>
+</p>
+
+<p>
+  <strong>Loser:</strong>
+  <%= @game.loser %>
+</p>
+
+<p>
+  <strong>File:</strong>
+  <%= @game.file %>
+</p>
+
+<p>
+  <strong><%= "Competitors: " %></strong>
+</p>
+<%= render 'competitors/index' %>
+

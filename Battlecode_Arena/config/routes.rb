@@ -1,9 +1,19 @@
 Rails.application.routes.draw do
+  
+  get 'help' => 'static_pages#help'
+
+  get 'about' => 'static_pages#about'
+  
+  get 'contact' => 'static_pages#contact'
+  
+  get 'inactive' => 'competitors#index_inactive'
+  
+  resources :games, :except => [:edit, :destroy]
+  resources :competitors, :except => [:edit, :destroy]
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
-
   # You can have the root of your site routed with "root"
-  # root 'welcome#index'
+   root 'static_pages#home'
 
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'

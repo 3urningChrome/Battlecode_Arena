@@ -1,0 +1,41 @@
+<%= form_for(@competitor, html:{multipart:true}) do |f| %>
+  <% if @competitor.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@competitor.errors.count, "error") %> prohibited this competitor from being saved:</h2>
+
+      <ul>
+      <% @competitor.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label "Submission name - name your Bot" %><br>
+    <%= f.text_field :name %>
+  </div>
+  <div class="field">
+    <%= f.label "Team name - Brave enough to admit who you really are?" %><br>
+    <%= f.text_field :team %>
+  </div>
+
+  Upload your jar file here: (see <%= link_to "Help",   help_path %> for details)<br>
+  <span class="ai">
+    <%= f.file_field :ai, accept: 'application/jar' %>
+  </span>
+  
+  <p><P></P></p>
+
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>
+<script type="text/javascript">
+  $('#competitor_ai').bind('change',function() {
+    var size_in_megabytes = this.files[0].size/1024/1024;
+    if(size_in_megabytes > 5) {
+      alert('Maximum file size is 5MB');
+    }
+  });
+</script>

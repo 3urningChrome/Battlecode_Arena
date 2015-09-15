@@ -1,0 +1,35 @@
+<%= render 'layouts/sortable_table_header' %>
+  <thead>
+    <tr>
+      <th>View Match</th>
+      <th>Winner</th>
+      <th>Loser</th>
+      <th>Team</th>
+      <th>Map</th>
+      <th>Team A</th>
+      <th>Team B</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @games.each do |game| %>
+      <tr>
+        <td><%= link_to image_tag("cog.png"), game %></td>
+        
+        <% if game.winner == nil then %>
+          <td>Queued</td>
+        <% else %>
+        <td><%= game.winner %></td> 
+        <% end %>
+        <td><%= game.loser %></td>
+        <td><%= game.team %></td>
+        <td><%= game.map %></td>
+        <td><%= game.teamA %></td>
+        <td><%= game.teamB %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<%= render 'layouts/sortable_table_footer' %>
+<br>

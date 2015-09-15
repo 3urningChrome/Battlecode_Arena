@@ -1,0 +1,26 @@
+<%= render 'layouts/sortable_table_header' %>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Team</th>
+      <th>Elo</th>
+      <th>Wins</th>
+      <th>Losses</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @competitors.each do |competitor| %>
+      <tr>
+        <td><%= link_to competitor.name, competitor %></td>
+        <td><%= competitor.team %></td>
+        <td><%= competitor.Elo %></td>
+        <td><%= competitor.wins %></td>
+        <td><%= competitor.losses %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<%= render 'layouts/sortable_table_footer' %>
+
