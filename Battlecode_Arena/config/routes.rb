@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
   
+ # resources :maps
   get 'help' => 'static_pages#help'
 
   get 'about' => 'static_pages#about'

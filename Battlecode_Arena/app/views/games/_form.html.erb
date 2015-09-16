@@ -16,16 +16,16 @@
     <%= f.text_field :team %>
   </div>
   <div class="field">
-    <%= f.label :teamA %><br>
-    <%= f.text_field :teamA %>
+    <%= f.label "Team A" %><br>
+    <%= f.collection_select(:teamA, @competitors, :name, :name, prompt: true) %>  
   </div>
   <div class="field">
-    <%= f.label :teamB %><br>
-    <%= f.text_field :teamB %>
+    <%= f.label "Team B" %><br>
+    <%= f.collection_select(:teamB, @competitors, :name, :name, prompt: true) %>  
   </div>
   <div class="field">
     <%= f.label :map %><br>
-    <%= f.text_field :map %>
+    <%= f.collection_select(:map, @maps, :name, :name, prompt: true) %>    
   </div>
   
   <div class="actions">

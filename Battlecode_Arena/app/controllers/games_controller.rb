@@ -4,38 +4,50 @@ class GamesController < ApplicationController
   # GET /games
   # GET /games.json
   def index
-    @games = Game.all
+    @games = Game.all.order(:updated_at).reverse_order
   end
 
   # GET /games/1
   # GET /games/1.json
   def show
-    @competitors = Competitor.where("name LIKE ? OR name LIKE ?", @game.teamA, @game.teamB)
+    @competitors = Competitor.where("name = ? OR name = ?", @game.teamA, @game.teamB)
   end
 
   # GET /games/new
   def new
     @game = Game.new
+    @maps = Map.all.order(:name)
+    @competitors= Competitor.where("active = ?", true).order(:created_at).reverse_order
   end
 
   # GET /games/1/edit
   def edit
+    @maps = Map.all.order(:name)
+    @competitors= Competitor.where("active = ?", true).order(:created_at).reverse_order  
   end
 
   # POST /games
   # POST /games.json
   def create
     @game = Game.new(game_params)
-    @game.winner = @game.teamA
-    @game.loser = @game.teamB
 
     respond_to do |format|
-      if @game.save
-        format.html { redirect_to @game, notice: 'Game was successfully created.' }
-        format.json { render :show, status: :created, location: @game }
-      else
+      begin
+        if @game.save
+          format.html { redirect_to @game, notice: 'Game was successfully created.' }
+          format.json { render :show, status: :created, location: @game }
+        else
+          format.html { render :new }
+          format.json { render json: @game.errors, status: :unprocessable_entity }
+          @maps = Map.all.order(:name)
+          @competitors= Competitor.where("active = ?", true).order(:created_at).reverse_order
+        end
+      rescue ActiveRecord::RecordNotUnique
+        @game.errors.add(:teamB, "Game Already Exists between these Competitors")
         format.html { render :new }
         format.json { render json: @game.errors, status: :unprocessable_entity }
+        @maps = Map.all.order(:name)
+        @competitors= Competitor.where("active = ?", true).order(:created_at).reverse_order
       end
     end
   end

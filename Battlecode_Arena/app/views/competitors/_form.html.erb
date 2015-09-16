@@ -12,18 +12,19 @@
   <% end %>
 
   <div class="field">
-    <%= f.label "Submission name - name your Bot" %><br>
-    <%= f.text_field :name %>
+    <%= f.label "Submission name" %><br>
+    <%= f.text_field :name %>  - name your Bot
   </div>
   <div class="field">
-    <%= f.label "Team name - Brave enough to admit who you really are?" %><br>
-    <%= f.text_field :team %>
+    <%= f.label "Team name" %><br>
+    <%= f.text_field :team %> - Brave enough to admit who you really are?
   </div>
-
-  Upload your jar file here: (see <%= link_to "Help",   help_path %> for details)<br>
-  <span class="ai">
-    <%= f.file_field :ai, accept: 'application/jar' %>
-  </span>
+  <div>
+    Upload your jar file here: (see <%= link_to "Help",   help_path %> for details)<br>
+    <span class="ai">
+      <%= f.file_field :ai, accept: 'application/jar' %>
+    </span>
+  </div>
   
   <p><P></P></p>
 

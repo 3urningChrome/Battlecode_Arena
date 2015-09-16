@@ -36,17 +36,24 @@
 </p>
 
 <p>
-  <strong><%= "Matches: " %></strong>
+  <% if @competitor.active != true %>
+    <% if @competitor.broken != true %>
+      <%= form_for @competitor do |t| %>
+        <%= t.hidden_field :active, :value=>true %>
+        <%= t.submit "Reactivate Submission" %>
+      <% end %>
+    <% else %>
+      This submittion is Broken, and cannot be Revived. <br>
+      Please check your build runs and submit again.
+    <% end %>
+  <% else %>
+    <p>
+      <strong><%= "Matches:" %> <%= link_to "New Match", new_game_path, class: "btn btn-lg btn-primary"%></strong>
+    </p>
+  <% end %>
 </p>
+
 <p>
   <%= render 'games/index' %>
 </p>
 
-<p>
-  <% if @competitor.active != true %>
-    <%= form_for @competitor do |t| %>
-      <%= t.hidden_field :active, :value=>true %>
-      <%= t.submit "Reactivate Submission" %>
-    <% end %>
-  <% end %>
-</p>

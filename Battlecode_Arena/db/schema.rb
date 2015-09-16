@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150914185259) do
+ActiveRecord::Schema.define(version: 20150916092251) do
 
   create_table "competitors", force: :cascade do |t|
     t.string   "name"
@@ -25,6 +25,9 @@ ActiveRecord::Schema.define(version: 20150914185259) do
     t.datetime "updated_at", null: false
     t.string   "ai"
   end
+
+  add_index "competitors", ["active"], name: "index_competitors_on_active"
+  add_index "competitors", ["name"], name: "index_competitors_on_name", unique: true
 
   create_table "games", force: :cascade do |t|
     t.string   "team"
@@ -40,5 +43,15 @@ ActiveRecord::Schema.define(version: 20150914185259) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
+
+  add_index "games", ["teamA", "teamB", "map"], name: "index_games_on_teamA_and_teamB_and_map", unique: true
+
+  create_table "maps", force: :cascade do |t|
+    t.string   "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "maps", ["name"], name: "index_maps_on_name", unique: true
 
 end
