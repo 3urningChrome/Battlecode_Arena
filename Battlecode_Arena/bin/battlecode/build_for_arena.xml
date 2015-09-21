@@ -1,4 +1,4 @@
-<project name="Battlecode arena" basedir="." default="run">
+<project name="Battlecode arena" basedir="." default="arena_build">
 
   <description>
     Build file for Battlecode players.
@@ -28,10 +28,6 @@
   
   <target name="-init">
     <mkdir dir="${path.bin}"/>
-  </target>
-
-  <target name="clean">
-    <delete dir="${path.bin}"/>
   </target>
 
   <target name="build-scala" if="scala">
@@ -67,72 +63,6 @@
       <compilerarg line="-Xlint"/>
     </javac>
   </target>
-
-  <target name="run" depends="build">
-    <java 
-     classpathref="classpath.run"
-     fork="yes"
-     classname="battlecode.client.Main">
-      <jvmarg value="-Dapple.awt.graphics.UseQuartz=true"/>
-      <jvmarg value="-Dbc.server.map-path=${path.maps}"/>
-      <jvmarg value="-Xmx256m"/> 
-      <jvmarg value="-Djava.library.path=${path.lib}" />
-      <arg line="-c bc.conf"/>
-    </java>
-  </target> 
-
-  <target name="runmatch" depends="build">
-    <java 
-     classpathref="classpath.run"
-     fork="yes"
-     classname="battlecode.client.Main">
-      <jvmarg value="-Dapple.awt.graphics.UseQuartz=true"/>
-      <jvmarg value="-Dbc.server.map-path=${path.maps}"/>
-      <jvmarg value="-Dbc.client.match=${match}"/>
-      <jvmarg value="-Xmx256m"/> 
-      <jvmarg value="-Djava.library.path=${path.lib}" />
-      <arg line="-c bc.conf"/>
-    </java>
-  </target> 
-  
-  <target name="serve" depends="build">
-    <java
-     classpathref="classpath.run"
-     fork="yes"
-     classname="battlecode.server.Main">
-      <jvmarg value="-Dbc.server.mode=tcp"/>
-      <arg line="-c bc.conf"/>
-    </java>
-  </target>
-
-  <target name="headless" depends="-init">
-    <java
-     classpathref="classpath.run"
-     fork="yes"
-     classname="battlecode.server.Main">
-      <jvmarg value="-Dbc.server.mode=headless"/>
-      <arg line="-c bc.conf"/>
-    </java>
-  </target>
-  
-  <target name="file" depends="build">
-    <java
-     classpathref="classpath.run"
-     fork="yes"
-     classname="battlecode.server.Main">
-      <jvmarg value="-Dbc.server.mode=headless"/>
-      <arg line="-c bc.conf"/>
-    </java>
-  </target>
-
-  <target name="jar" depends="build">
-    <fail unless="team">
-    run as "ant -Dteam=name jar" where "name" is a folder in your teams folder.
-    </fail>
-    <jar destfile="${path.base}/submission.jar"
-      basedir="${path.teams}"
-      includes="${team}/**/*.java,${team}/**/*.scala"/>
-  </target>
   
   <target name="arena_build" depends="build">
     <fail unless="team">
@@ -140,20 +70,6 @@
     </fail>
     <jar destfile="${path.base}/arena_submission_${team}.jar"
       basedir="${path.bin}"
-      includes="${team}/**/*.class,${team}/**/*.scala"/>
+      includes="${team}/**/*.class"/>
   </target>
-  
-  <target name="arena_jar"> 
-    <fail unless="team">
-      run as "ant -Dteam=name arena_jar" where "name" is a folder in your teams folder.
-    </fail>
-     <fail unless="submission_name">
-      run as "ant -Dteam=name -Dsubmission_name=sub_name arena_jar" where "name" is original, sub_name = new
-    </fail>
-    <taskdef name="jarjar" classname="com.tonicsystems.jarjar.JarJarTask" classpath="../../lib/jarjar-1.4.jar"/> 
-    <jarjar destfile="${path.base}/arena_submission_${team}.jar">
-      <zipfileset src="${path.base}/arena_temp/arena_submission_${team}.jar"/> 
-      <rule pattern="${team}.**" result="${submission_name}.@1"/> 
-    </jarjar> 
-  </target>  
 </project>
