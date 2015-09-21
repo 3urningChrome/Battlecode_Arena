@@ -18,10 +18,8 @@
 
 
 #Ignore any Battlecode players:
-bin/battlecode/bin/*.*
 
 #ignore any downloads in Game subfolders
-public/downloads/game/*.*
 
 #ignore any uploads:
 public uploads
