@@ -4,6 +4,7 @@ class Game < ActiveRecord::Base
     before_save :create_full_team_names
     validates :teama, presence: true
     validates :teamb, presence: true
+    validates :map, presence: true
     validate :different_teams
     
     def different_teams
