@@ -1,6 +1,45 @@
-<h1>Editing Competitor</h1>
+<h1>Competitor Already Exists</h1>
 
-<%= render 'form' %>
+<%= form_for(@competitor, html:{multipart:true}) do |f| %>
+  <% if @competitor.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@competitor.errors.count, "error") %> prohibited this competitor from being saved:</h2>
+
+      <ul>
+      <% @competitor.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <strong>Updating Code for Competitor:  <%= @competitor.name %> </strong><br>
+  </div>
+<br>
+  <div class="field">
+    <%= f.label "Team name" %><br>
+    <%= f.text_field :team %> - Brave enough to admit who you really are?
+  </div>
+
+  <div class="actions">
+    <%= f.submit "Update Competitor with new code" %> 
+    <br>- This will overwrite the current Competitor<br>
+    <br> Your wins/losses and Elo will also be reset.
+    <br> Only continue if this is what you want.
+    <br> If you wish to have this run along side your previous Competitor
+    <br> or this is not your Competitor, rename your team folder (and Package!) before creating the jar
+  </div><br>
+<% end %>
+
+<script type="text/javascript">
+  $('#competitor_ai').bind('change',function() {
+    var size_in_megabytes = this.files[0].size/1024/1024;
+    if(size_in_megabytes > 5) {
+      alert('Maximum file size is 5MB');
+    }
+  });
+</script>
 
 <%= link_to 'Show', @competitor %> |
-<%= link_to 'Back', competitors_path %>
+<%= link_to 'Back', new_competitor_path %>

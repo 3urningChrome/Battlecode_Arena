@@ -47,7 +47,7 @@
 
 <p>
   <strong>File:</strong>
-  <%= @game.file %>
+  <%= link_to "match.rms", games_match_rms_path(:game_file_path=> @game.get_game_id()) %>
 </p>
 
 <p>

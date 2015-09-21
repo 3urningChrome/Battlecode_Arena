@@ -10,7 +10,7 @@
     </tr>
   </thead>
 
-  <tbody>
+  <tbody class "competitors">
     <% @competitors.each do |competitor| %>
       <tr>
         <% shown_name = competitor.broken ? "#{competitor.name} - Broken" : competitor.name %>
@@ -22,6 +22,7 @@
       </tr>
     <% end %>
   </tbody>
+
 </table>
 <%= render 'layouts/sortable_table_footer' %>
 

@@ -12,11 +12,15 @@
     <br><br><a name="step1" class="anchor">. [invisible]</a><br><strong>1. Compiling your Submission</strong><br>
     Since we don't want to give away our clever strategies too easily, we only want to upload compiled jar files.<br>
     i.e. your code has been compiled and is no longer human readable.<br>
-    <br> a) You can download this build_for_arena.xml. 
+    <br> a) You can download this <%= link_to "build_for_arena.xml", static_pages_build_for_arena_xml_url, :class => "themed_text" %>. 
     <br> b) Save it into your Battlecode Directory
-    <br> c) Run Ant build_for_arena
-    <br><br> This will produce an arena_submission.jar file (of compiled code only) in your battlecode Directory
+    <br> c) Run ant -buildfile build_for_arena.xml -Dteam=team arena_build
+    <br><br> This will produce an arena_submission_team.jar file (of compiled code only) in your battlecode Directory
     <br> This is the file you need to upload.
+    <br> Note team in the above command line is the folder in teams you are wanting to upload. 
+    <br> this name will be hidden as it will probably be your actual team name. 
+    <br> You will be able to override this with a different name if you choose.
+    
     </p>
     <br>
     <br>
@@ -27,12 +31,10 @@
     <br>   b) You also have the option of adding your team name (or some sort of team name) if you'd like to declare who you are
     <br>        I'd recommend using the team name slot, it's always more fun to know who you are up against, but the choice is yours.
     <br>   c) Finally you have to upload your Jar file. 
-    <br>        You can upload the submission.jar that is built when submitting your entry to the official scrimmage server,
-    <br>        but please realise that this contains your source code. it will work, but I'd feel happier if everyone 
-    <br>        uploaded the arena_submission.jar file instead. 
+    <br>        You upload the arena_submission_#teamname#.jar. 
     <br><br> <a name="step3" class="anchor">.</a><br><strong>3. Creating a Match</strong>
     <br> by default, every submission will play every other submission
-    <br> however, this will take some time as the numbers of submission grow
+    <br> however, this will take some time as the numbers of submissions grow
     <br> to the point that some games may never happen within the life time of the competition.
     <br> These auto played matches, will be played in reverse uploaded time order. i.e. the latest submissions will play each other first.
     <br> if there is a particular match you are interested in, then create a new match.

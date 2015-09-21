@@ -11,27 +11,24 @@
     </div>
   <% end %>
 
-  <div class="field">
-    <%= f.label "Submission name" %><br>
-    <%= f.text_field :name %>  - name your Bot
-  </div>
-  <div class="field">
-    <%= f.label "Team name" %><br>
-    <%= f.text_field :team %> - Brave enough to admit who you really are?
-  </div>
   <div>
-    Upload your jar file here: (see <%= link_to "Help",   help_path %> for details)<br>
+    <strong>Submission jar</strong> (see <%= link_to "Help",   help_path %> for details)<br>
+    
     <span class="ai">
       <%= f.file_field :ai, accept: 'application/jar' %>
     </span>
   </div>
-  
-  <p><P></P></p>
+<br>
+  <div class="field">
+    <%= f.label "Team name" %><br>
+    <%= f.text_field :team %> - Brave enough to admit who you really are?
+  </div>
 
   <div class="actions">
     <%= f.submit %>
   </div>
 <% end %>
+
 <script type="text/javascript">
   $('#competitor_ai').bind('change',function() {
     var size_in_megabytes = this.files[0].size/1024/1024;

@@ -10,7 +10,7 @@ class GamesController < ApplicationController
   # GET /games/1
   # GET /games/1.json
   def show
-    @competitors = Competitor.where("name = ? OR name = ?", @game.teamA, @game.teamB)
+    @competitors = Competitor.where("full_name = ? OR full_name = ?", @game.full_name_A, @game.full_name_B)
   end
 
   # GET /games/new
@@ -30,7 +30,7 @@ class GamesController < ApplicationController
   # POST /games.json
   def create
     @game = Game.new(game_params)
-
+    
     respond_to do |format|
       begin
         if @game.save
@@ -74,6 +74,14 @@ class GamesController < ApplicationController
       format.html { redirect_to games_url, notice: 'Game was successfully destroyed.' }
       format.json { head :no_content }
     end
+  end
+  
+  def match_rms
+    send_file(
+      "#{Rails.root}/public/downloads/game/#{params[:game_file_path]}/match.rms",
+      filename: "match.rms",
+      type: "application/rms"
+    )
   end
 
   private

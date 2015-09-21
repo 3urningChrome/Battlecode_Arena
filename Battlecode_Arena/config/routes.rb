@@ -1,6 +1,12 @@
 Rails.application.routes.draw do
   
  # resources :maps
+
+  get 'static_pages/build_for_arena_xml'
+  
+  get 'games/match_rms'
+  
+  
   get 'help' => 'static_pages#help'
 
   get 'about' => 'static_pages#about'
@@ -10,7 +16,7 @@ Rails.application.routes.draw do
   get 'inactive' => 'competitors#index_inactive'
   
   resources :games, :except => [:edit, :destroy]
-  resources :competitors, :except => [:edit, :destroy]
+  resources :competitors, :except => [:destroy]
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
   # You can have the root of your site routed with "root"

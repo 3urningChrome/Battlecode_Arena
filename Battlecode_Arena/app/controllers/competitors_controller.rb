@@ -15,7 +15,7 @@ class CompetitorsController < ApplicationController
   # GET /competitors/1
   # GET /competitors/1.json
   def show
-    @games = Game.where("teamA LIKE ? OR teamB LIKE ?", @competitor.name, @competitor.name)
+    @games = Game.where("teamA = ? OR teamB = ?", @competitor.name, @competitor.name)
   end
 
   # GET /competitors/new
@@ -32,19 +32,20 @@ class CompetitorsController < ApplicationController
   # POST /competitors.json
   def create
     @competitor = Competitor.new(competitor_params)
-    @competitor.Elo = 1500
-    @competitor.wins = 0
-    @competitor.losses = 0
-    @competitor.active = false
-    @competitor.broken = false
 
     respond_to do |format|
-      if @competitor.save
-        format.html { redirect_to @competitor, notice: 'Competitor was successfully created.' }
-        format.json { render :show, status: :created, location: @competitor }
-      else
-        format.html { render :new }
-        format.json { render json: @competitor.errors, status: :unprocessable_entity }
+      if @competitor.check_for_pre_existing_version then
+        #pre-existing version. warn, and update.
+        @competitor = @competitor.update_to_pre_existing_version(competitor_params)
+        format.html { render :edit }
+      else        
+        if @competitor.save
+          format.html { redirect_to @competitor, notice: 'Competitor was successfully created.' }
+          format.json { render :show, status: :created, location: @competitor }
+        else
+          format.html { render :new }
+          format.json { render json: @competitor.errors, status: :unprocessable_entity }
+        end
       end
     end
   end

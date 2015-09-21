@@ -2,165 +2,221 @@ require 'rufus-scheduler'
 require 'fileutils'
 
 scheduler = Rufus::Scheduler.new
+bin_scheduler = Rufus::Scheduler.new
+
+@arena_path = 'bin/battlecode/arena_temp'
+@battlecode_path = 'bin/battlecode'
+@battlecode_bin_path = 'bin/battlecode/bin'
+@output_path = File.join(@battlecode_path, 'log')
+@battlecode_config = "#{@battlecode_path}/bc.conf"
+@battlecode_file_path = 'public/downloads/game'
+
+TIMEOUT = 90
 
 
-def thread_process_game_to_catch_bad_errors(current_game)
-  thread_start_time = Time.now
-  run_game_thread = Thread.new do
-      process_game current_game 
-  end
-  
-  while run_game_thread.alive? do
-    if Time.now - thread_start_time > 60
-      run_game_thread.kill 
-      Rails.logger.info "Killed unresponsive game after 60 seconds"
-# can we work out which team is the issue and ban it?
-# I guess it's the one with no games played....
-      @list_of_games_teamA_played = Game.where("winner = ? OR loser = ?", current_game.teamA, current_game.teamA)
-      if @list_of_games_teamA_played.count == 0 then
-        remove_competitor = Competitor.where("name = ?", current_game.teamA).first
-        remove_competitor.active = false
-        remove_competitor.broken = true
-        remove_competitor.save
-        #also, kill any pending games.
-        @pending_games = Game.where("teamA = ? OR teamB = ?", current_game.teamA, current_game.teamA)
-        @pending_games.each do |pending_game|
-          pending_game.destroy!
-        end
-      end
-     @list_of_games_teamB_played = Game.where("winner = ? OR loser = ?", current_game.teamB, current_game.teamB)
-      if @list_of_games_teamB_played.count == 0 then
-        remove_competitor = Competitor.where("name = ?", current_game.teamB).first
-        remove_competitor.active = false
-        remove_competitor.broken = true
-        remove_competitor.save
-        #also, kill any pending games.
-        @pending_games = Game.where("teamA = ? OR teamB = ?", current_game.teamA, current_game.teamA)
-        @pending_games.each do |pending_game|
-          pending_game.destroy!
-        end        
-      end      
-      return
-    end
-    sleep(0.5)
+#Test if submission has a bin or not:
+def does_bin_already_exist?(competitor_name)
+  return true if File.exists?("#{@battlecode_path}/bin/#{competitor_name}")
+  return false
+end
+
+# run extract Jar file for Submission
+def extract_jar_file(competitor_name)
+  competitor = Competitor.where("name = ?", competitor_name).first
+  return if competitor == nil
+  Dir.chdir(@arena_path) do
+    puts "finding jar from: #{Rails.root}/public#{competitor.ai}"
+    %x[jar -xvf "#{Rails.root}/public#{competitor.ai}"]
   end
 end
 
-def process_game(current_game) 
-  Rails.logger.info "Processing game: #{current_game.id}, TeamA: #{current_game.teamA} against TeamB: #{current_game.teamB}. On Map: #{current_game.map}"
-  # run battlecode for teamA,teamB,map.
-  # record results in Db.
-  # attach and save result file.
-  @battlecode_path = File.join(Rails.root, '/bin/battlecode2015')
-  @output_path = File.join(@battlecode_path, 'log')
-  
-  #write config file
-  lines = IO.readlines("#{@battlecode_path}/bc.conf").map do |line|
-    line = 'bc.game.maps=' + current_game.map if(line.start_with?("bc.game.maps="))
-    line = 'bc.game.team-a=' + current_game.teamA if(line.start_with?("bc.game.team-a="))
-    line = 'bc.game.team-b=' + current_game.teamB if(line.start_with?("bc.game.team-b="))
-    line
+# rename whatever submission has been given to Sumbission_name
+def rename_class_folder_to_competitor_name (submission_name)
+  Dir.foreach(@arena_path) do |item|
+    next if item == '.' or item == '..'
+    FileUtils.rm_rf("#{@arena_path}/#{item}") if item == 'META-INF'
   end
-  File.open("#{@battlecode_path}/bc.conf", 'w') do |file|
-    file.puts lines
+end
+
+#move Submission <name> from arena_temp to Bin
+def move_competitor_name_from_arena_temp_to_battlecode_bin(competitor_name)
+  return false unless Dir.exists?("#{@arena_path}/#{competitor_name}")
+  FileUtils.mv "#{@arena_path}/#{competitor_name}", "#{@battlecode_bin_path}/#{competitor_name}"
+end
+
+# Find any requested Games not yet played
+def get_unplayed_games()
+  return Game.where("winner is ?", nil).order(:created_at)
+end
+
+#Generate games between competitors who have not yet played
+def get_auto_games()
+  batch_games = Array.new
+  batch_competitors = Competitor.where("active = ?", true).order(:updated_at).reverse_order
+  maps = Map.all
+  batch_competitors.each do |teamA|
+    batch_competitors.each do |teamB|
+      if teamA.name != teamB.name then
+        maps.each do |map|
+          game_exists = Game.where("full_name_A = ? AND full_name_B = ? AND map = ?", "#{teamA.get_full_name()}", "#{teamB.get_full_name()}", map.name).first
+          batch_games.push(Game.new(:team => "AutoGen", :teamA => "#{teamA.name}", :teamB => "#{teamB.name}", :map => map.name)) if game_exists.nil?
+        end
+      end
+    end
+  end
+  return batch_games
+end
+
+#Start games in a new thread. as sometimes it never comes back. (broken submissions)
+#kill thread if it takes too long. then take measure on submissions.
+def handle_battlecode_game(game)
+  thread_start_time = Time.now
+  puts "Starting new Thread"
+  running_game_thread = Thread.new do
+    run_battlecode_game(game)
   end
   
-  #extract jar to file from upload to bin/team
-  #if there is no folder in battlecode2015/bin/ called name:
-  unless File.exists?("#{@battlecode_path}/bin/#{current_game.teamA}") 
-    Rails.logger.info "No folder called: #{@battlecode_path}/bin/#{current_game.teamA}"
-  # we need to extract it from where it was uploaded.
-    #run: jar -xvf arena_submission.jar
-    @competitorA = Competitor.where("name = ?", current_game.teamA).first
-    Dir.chdir "#{@battlecode_path}/arena_temp"
-    puts "jar -xvf #{Rails.root}/public#{@competitorA.ai}"
-    result = %x[jar -xvf "#{Rails.root}/public#{@competitorA.ai}"]
-    puts "Here #{result}"
-    Dir.chdir Rails.root
-  # change it's folder name to match name:
-  #move it to battlecode2015/bin/
-  #FileUtils.copy_entry @source, @destination
+  while running_game_thread.alive? do
+    if Time.now - thread_start_time < TIMEOUT
+      sleep 1
+      next
+    end
+    #time ran out. assume submission broken.
+    puts "Killing Thread"
+    running_game_thread.kill
+    check_for_broken_competitor(game.teamA)
+    check_for_broken_competitor(game.teamB)
   end
+end
+
+#check if this competitor could be broken, and mark as such, and destroy games
+# Could be false +'ve if two new submission fight, and one is broken. still mark as bad'
+def check_for_broken_competitor(competitor_name)
+  puts "Broken game for #{competitor_name}"
+  games_competitor_played = Game.where("(teamA = ? OR teamB = ?) AND winner is not ?", competitor_name, competitor_name,nil)
+  if games_competitor_played == 0 then
+    Competitor.where("name = ?", competitor_name).first.update_attributes(:active => false, :broken => true)
+    Game.where("full_name_A = ? OR full_name_B = ?", competitor_name, competitor_name).each {|pending_game| pending_game.destroy!}
+  end
+end
+
+def check_for_broken_flag(competitor_name)
+  return Competitor.where("full_name = ?", competitor_name).first.broken
+end
+#run the match
+def run_battlecode_game(game)
+  #skips any matches between now broken competitors.
+  return if check_for_broken_flag(game.full_name_A)
+  return if check_for_broken_flag(game.full_name_B)
   
+   puts "setting up config"
+  setup_battlecode_config(game)
   
   #run battlecode
-  result = %x[ant headless -file "#{@battlecode_path}/build.xml"]
-  puts "we are still running"
-  result.each_line do |line|
-    if (line.start_with?("     [java] [server]") && line.include?( " wins "))
-      text = '"'+ test_player+ '","' + opposing_team + '","' + map + '","' +  line.sub("[java] [server]","").squeeze(' ').chomp + '"'
-      @current_results << ("\n" + text)
-      open(@output_path, 'a') { |f| f.puts text }
-    end
-  end
+   puts "running battlecode"
+  results = %x[ant headless -file "#{@battlecode_path}/build.xml"]
   
-  #parse results.
+   puts "parsing results"
+  game = parse_battlecode_results_and_update_game_file(results,game)
   
-  
-  #upload results file (match.rms) to uploader for game.
-  
-  
-  current_game.winner = current_game.teamA
-  current_game.loser = current_game.teamB
-  current_game.save
+  #make results file available for download
+  game_id = game.get_game_id
+  puts "moving from: #{@battlecode_path}/match.rms to: #{@battlecode_file_path}/#{game_id}/match.rms"
+  puts "Creating: #{@battlecode_file_path}/#{game_id}"
+  FileUtils.mkdir_p "#{@battlecode_file_path}/#{game_id}"
+  FileUtils.mv "#{@battlecode_path}/match.rms", "#{@battlecode_file_path}/#{game_id}/match.rms"
+  game.file = "#{@battlecode_file_path}/#{game_id}/match.rms"
+  game.save
 end
 
-scheduler.every("10s") do
-   Rails.logger.info "Running Batch Game process #{Time.now}"
-   
-  # pause scheduler
-  scheduler.pause
-   
-  # select any games with winner = "" by earliest creation date.
-  @batch_games = Game.where("winner is ?", nil).order(:created_at)
-   
-  # These are player created ones, and need to be run first.
-   
-  # if number of games > 0 then
-  if @batch_games.count > 0 then
-    #loop through each game (limit of 10)
-    @batch_games.first(10).each do |batch_game|
-      thread_process_game_to_catch_bad_errors batch_game
+def parse_battlecode_results_and_update_game_file(results,game)
+  puts "we are parsing results:"
+  puts results
+  winner = ""
+  results.each_line do |line|
+    if (line.include?("[java] [server]") && line.include?( " wins "))
+      #text = '"'+ test_player+ '","' + opposing_team + '","' + map + '","' +  line.sub("[java] [server]","").squeeze(' ').chomp + '"'
+      winner = line.split('(')[1][0,1]
     end
-  else
-    #select competitors by created date. most recent first - active only.
-    @batch_competitors = Competitor.where("active = ?", true).order(:updated_at).reverse_order
-    @maps = Map.all
-    #Rails.logger.info "Processing #{@batch_competitors.count}"
-    
-    #loop through competitors, playing most recent against the rest on all maps.
-    @batch_competitors.each_with_index do |teamA, index|
-      @batch_competitors.each do |teamB|
-      # check games does not exist before running it, and it's not a game against itself.
-        #Rails.logger.info "checking game: #{teamA.name}/#{teamB.name}"
-        if teamA.name != teamB.name then
-          @maps.each do |map|
-            game_exists = Game.where("teamA = ? AND teamB = ? AND map = ?", teamA.name, teamB.name, map.name)
-            if game_exists.count > 0 then
-             # Rails.logger.info "Game already played before: #{teamA.name}/#{teamB.name}/#{map.name} "
-            else
-              batch_game = Game.new(:team => "AutoGen", :teamA => teamA.name, :teamB => teamB.name, :map => map.name)
-             thread_process_game_to_catch_bad_errors batch_game
-            end
-          end
-      # process game
-        else
-          #Rails.logger.info "Ignoring game with both players = #{teamA.name}/#{teamB.name}"
-        end
-      end
-      # Keep latest 20 submissions active. Otherwise, if it's older than 24hrs deactivate it.
-      if index > 20 then
-        if(Time.now - teamA.updated_at) > (24 * 60 * 60) then
-          teamA.active = false
-          teamA.save
-        end
-      end
+  end  
+  #update game file with results.
+  game.winner = winner=="A" ? game.teamA : game.teamB
+  game.loser  = winner=="A" ? game.teamB : game.teamA
+  puts "Winner: #{winner}"
+  
+  alter_competitor_stats(game)
+  return game
+end
+
+def alter_competitor_stats(game)
+  # increment win/loss
+  # set alter Elo
+  puts "Alter_Competitor_stats"
+  winner = Competitor.where("name = ?" ,game.winner).first
+  loser = Competitor.where("name = ?" ,game.loser).first
+  winner.wins = winner.wins + 1
+  loser.losses= loser.losses + 1
+  
+  #alter Elo
+  puts "wins: #{winner.wins}"
+  winner.save
+  loser.save
+end
+
+
+def setup_battlecode_config(game)
+    #set up config. (I know, there has to be a better way!)
+  lines = IO.readlines(@battlecode_config).map do |line|
+    line = 'bc.game.maps=' + game.map if(line.start_with?("bc.game.maps="))
+    line = 'bc.game.team-a=' + game.teamA if(line.start_with?("bc.game.team-a="))
+    line = 'bc.game.team-b=' + game.teamB if(line.start_with?("bc.game.team-b="))
+    line
+  end
+  File.open(@battlecode_config, 'w') do |file|
+    file.puts lines
+  end
+end
+
+#scheduler for creating the required Bin from competitor jar files.
+# Pause the other schedulers so we don't get knickers in a twist
+bin_scheduler.every("20s") do
+  #keep other schedulers paused
+  bin_scheduler.pause
+  while scheduler.paused? 
+    sleep 1
+  end
+  scheduler.pause
+  
+  competitors = Competitor.all
+  competitors.each do |competitor|
+    puts competitor_name = competitor.name
+    if not does_bin_already_exist?(competitor_name) then
+      extract_jar_file(competitor_name)
+      rename_class_folder_to_competitor_name(competitor_name)
+      move_competitor_name_from_arena_temp_to_battlecode_bin(competitor_name)
     end
   end
-   
-   # deactivate 'old' submissions
-   # restart schedular
-   scheduler.resume if scheduler.paused?
-  #Rails.logger.info "finished, it's #{Time.now}"
-   Rails.logger.flush
-end 
+  bin_scheduler.resume if bin_scheduler.paused?
+  scheduler.resume if scheduler.paused?
+end
+
+#scheduler for running the matches.
+# Pause the other schedulers so we don't get knickers in a twist
+scheduler.every("30s") do
+  #keep other schedulers paused
+  scheduler.pause
+  while bin_scheduler.paused? 
+    sleep 1
+  end
+  bin_scheduler.pause
+  
+  batch_games = get_unplayed_games()
+  batch_games = get_auto_games() unless batch_games.count > 0
+  batch_games.each do |batch_game|
+    batch_game.create_full_team_names()
+    handle_battlecode_game(batch_game)
+  end
+ 
+  bin_scheduler.resume if bin_scheduler.paused?
+  scheduler.resume if scheduler.paused?
+end
