@@ -10,7 +10,7 @@ class GamesController < ApplicationController
   # GET /games/1
   # GET /games/1.json
   def show
-    @competitors = Competitor.where("full_name = ? OR full_name = ?", @game.full_name_A, @game.full_name_B)
+    @competitors = Competitor.where("full_name = ? OR full_name = ?", @game.full_name_a, @game.full_name_b)
   end
 
   # GET /games/new
@@ -43,7 +43,7 @@ class GamesController < ApplicationController
           @competitors= Competitor.where("active = ?", true).order(:created_at).reverse_order
         end
       rescue ActiveRecord::RecordNotUnique
-        @game.errors.add(:teamB, "Game Already Exists between these Competitors")
+        @game.errors.add(:teamb, "Game Already Exists between these Competitors")
         format.html { render :new }
         format.json { render json: @game.errors, status: :unprocessable_entity }
         @maps = Map.all.order(:name)
@@ -92,6 +92,6 @@ class GamesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def game_params
-      params.require(:game).permit(:team, :teamA, :teamB, :map, :turns, :scoreA, :scoreB, :winner, :loser, :file)
+      params.require(:game).permit(:team, :teama, :teamb, :map, :turns, :scorea, :scoreb, :winner, :loser, :file)
     end
 end

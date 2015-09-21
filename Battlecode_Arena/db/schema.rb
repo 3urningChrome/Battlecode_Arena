@@ -13,6 +13,9 @@
 
 ActiveRecord::Schema.define(version: 20150918133834) do
 
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
   create_table "competitors", force: :cascade do |t|
     t.string   "name"
     t.string   "team"
@@ -29,27 +32,27 @@ ActiveRecord::Schema.define(version: 20150918133834) do
     t.string   "full_name"
   end
 
-  add_index "competitors", ["active"], name: "index_competitors_on_active"
-  add_index "competitors", ["name"], name: "index_competitors_on_name", unique: true
+  add_index "competitors", ["active"], name: "index_competitors_on_active", using: :btree
+  add_index "competitors", ["name"], name: "index_competitors_on_name", unique: true, using: :btree
 
   create_table "games", force: :cascade do |t|
     t.string   "team"
-    t.string   "teamA"
-    t.string   "teamB"
+    t.string   "teama"
+    t.string   "teamb"
     t.string   "map"
     t.string   "turns"
-    t.string   "scoreA"
-    t.string   "scoreB"
+    t.string   "scorea"
+    t.string   "scoreb"
     t.string   "winner"
     t.string   "loser"
     t.string   "file"
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
-    t.string   "full_name_A"
-    t.string   "full_name_B"
+    t.string   "full_name_a"
+    t.string   "full_name_b"
   end
 
-  add_index "games", ["full_name_A", "full_name_B", "map"], name: "index_games_on_full_name_A_and_full_name_B_and_map", unique: true
+  add_index "games", ["full_name_a", "full_name_b", "map"], name: "index_games_on_full_name_a_and_full_name_b_and_map", unique: true, using: :btree
 
   create_table "maps", force: :cascade do |t|
     t.string   "name"
@@ -57,6 +60,6 @@ ActiveRecord::Schema.define(version: 20150918133834) do
     t.datetime "updated_at", null: false
   end
 
-  add_index "maps", ["name"], name: "index_maps_on_name", unique: true
+  add_index "maps", ["name"], name: "index_maps_on_name", unique: true, using: :btree
 
 end

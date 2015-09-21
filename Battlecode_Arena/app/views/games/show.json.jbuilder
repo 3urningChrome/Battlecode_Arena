@@ -1,1 +1,1 @@
-json.extract! @game, :id, :team, :teamA, :teamB, :map, :turns, :scoreA, :scoreB, :winner, :loser, :file, :created_at, :updated_at
+json.extract! @game, :id, :team, :teama, :teamb, :map, :turns, :scoreA, :scoreB, :winner, :loser, :file, :created_at, :updated_at

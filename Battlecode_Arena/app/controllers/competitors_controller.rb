@@ -15,7 +15,7 @@ class CompetitorsController < ApplicationController
   # GET /competitors/1
   # GET /competitors/1.json
   def show
-    @games = Game.where("teamA = ? OR teamB = ?", @competitor.name, @competitor.name)
+    @games = Game.where("teama = ? OR teamb = ?", @competitor.name, @competitor.name)
   end
 
   # GET /competitors/new

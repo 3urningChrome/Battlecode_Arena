@@ -54,12 +54,12 @@ def get_auto_games()
   batch_games = Array.new
   batch_competitors = Competitor.where("active = ?", true).order(:updated_at).reverse_order
   maps = Map.all
-  batch_competitors.each do |teamA|
-    batch_competitors.each do |teamB|
-      if teamA.name != teamB.name then
+  batch_competitors.each do |teama|
+    batch_competitors.each do |teamb|
+      if teama.name != teamb.name then
         maps.each do |map|
-          game_exists = Game.where("full_name_A = ? AND full_name_B = ? AND map = ?", "#{teamA.get_full_name()}", "#{teamB.get_full_name()}", map.name).first
-          batch_games.push(Game.new(:team => "AutoGen", :teamA => "#{teamA.name}", :teamB => "#{teamB.name}", :map => map.name)) if game_exists.nil?
+          game_exists = Game.where("full_name_a = ? AND full_name_b = ? AND map = ?", "#{teama.get_full_name()}", "#{teamb.get_full_name()}", map.name).first
+          batch_games.push(Game.new(:team => "AutoGen", :teama => "#{teama.name}", :teamb => "#{teamb.name}", :map => map.name)) if game_exists.nil?
         end
       end
     end
@@ -84,8 +84,8 @@ def handle_battlecode_game(game)
     #time ran out. assume submission broken.
     puts "Killing Thread"
     running_game_thread.kill
-    check_for_broken_competitor(game.teamA)
-    check_for_broken_competitor(game.teamB)
+    check_for_broken_competitor(game.teama)
+    check_for_broken_competitor(game.teamb)
   end
 end
 
@@ -93,10 +93,10 @@ end
 # Could be false +'ve if two new submission fight, and one is broken. still mark as bad'
 def check_for_broken_competitor(competitor_name)
   puts "Broken game for #{competitor_name}"
-  games_competitor_played = Game.where("(teamA = ? OR teamB = ?) AND winner is not ?", competitor_name, competitor_name,nil)
+  games_competitor_played = Game.where("(teama = ? OR teamb = ?) AND winner is not ?", competitor_name, competitor_name,nil)
   if games_competitor_played == 0 then
     Competitor.where("name = ?", competitor_name).first.update_attributes(:active => false, :broken => true)
-    Game.where("full_name_A = ? OR full_name_B = ?", competitor_name, competitor_name).each {|pending_game| pending_game.destroy!}
+    Game.where("full_name_a = ? OR full_name_b = ?", competitor_name, competitor_name).each {|pending_game| pending_game.destroy!}
   end
 end
 
@@ -106,8 +106,8 @@ end
 #run the match
 def run_battlecode_game(game)
   #skips any matches between now broken competitors.
-  return if check_for_broken_flag(game.full_name_A)
-  return if check_for_broken_flag(game.full_name_B)
+  return if check_for_broken_flag(game.full_name_a)
+  return if check_for_broken_flag(game.full_name_b)
   
    puts "setting up config"
   setup_battlecode_config(game)
@@ -140,8 +140,8 @@ def parse_battlecode_results_and_update_game_file(results,game)
     end
   end  
   #update game file with results.
-  game.winner = winner=="A" ? game.teamA : game.teamB
-  game.loser  = winner=="A" ? game.teamB : game.teamA
+  game.winner = winner=="A" ? game.teama : game.teamb
+  game.loser  = winner=="A" ? game.teamb : game.teama
   puts "Winner: #{winner}"
   
   alter_competitor_stats(game)
@@ -168,8 +168,8 @@ def setup_battlecode_config(game)
     #set up config. (I know, there has to be a better way!)
   lines = IO.readlines(@battlecode_config).map do |line|
     line = 'bc.game.maps=' + game.map if(line.start_with?("bc.game.maps="))
-    line = 'bc.game.team-a=' + game.teamA if(line.start_with?("bc.game.team-a="))
-    line = 'bc.game.team-b=' + game.teamB if(line.start_with?("bc.game.team-b="))
+    line = 'bc.game.team-a=' + game.teama if(line.start_with?("bc.game.team-a="))
+    line = 'bc.game.team-b=' + game.teamb if(line.start_with?("bc.game.team-b="))
     line
   end
   File.open(@battlecode_config, 'w') do |file|
