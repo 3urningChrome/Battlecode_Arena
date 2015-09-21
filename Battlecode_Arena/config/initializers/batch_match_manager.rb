@@ -183,36 +183,47 @@ end
 
 #scheduler for creating the required Bin from competitor jar files.
 # Pause the other schedulers so we don't get knickers in a twist
-bin_scheduler.every("1m") do
-  #keep other schedulers paused
-  bin_scheduler.pause
-  while scheduler.paused? 
-    sleep 1
-  end
-  scheduler.pause
-  
-  competitors = Competitor.all
-  competitors.each do |competitor|
-    puts competitor_name = competitor.name
-    if not does_bin_already_exist?(competitor_name) then
-      extract_jar_file(competitor_name)
-      rename_class_folder_to_competitor_name(competitor_name)
-      move_competitor_name_from_arena_temp_to_battlecode_bin(competitor_name)
-    end
-  end
-  bin_scheduler.resume if bin_scheduler.paused?
-  scheduler.resume if scheduler.paused?
-end
+#bin_scheduler.every("1m") do
+#  #keep other schedulers paused
+#  bin_scheduler.pause
+#  while scheduler.paused? 
+#    sleep 1
+#  end
+#  scheduler.pause
+#  
+#  competitors = Competitor.all
+#  competitors.each do |competitor|
+#    puts competitor_name = competitor.name
+#    if not does_bin_already_exist?(competitor_name) then
+#      extract_jar_file(competitor_name)
+#      rename_class_folder_to_competitor_name(competitor_name)
+#      move_competitor_name_from_arena_temp_to_battlecode_bin(competitor_name)
+#    end
+#  end
+#  bin_scheduler.resume if bin_scheduler.paused?
+#  scheduler.resume if scheduler.paused?
+#end
 
 #scheduler for running the matches.
 # Pause the other schedulers so we don't get knickers in a twist
-scheduler.every("5m") do
+scheduler.every("1m") do
   #keep other schedulers paused
-  scheduler.pause
-  while bin_scheduler.paused? 
-    sleep 1
+  
+  competitors = Competitor.all
+  FileUtils.rm_rf(@battlecode_bin_path)
+  FileUtils.mkdir(@battlecode_bin_path)
+  competitors.each do |competitor|
+    puts competitor_name = competitor.name
+    extract_jar_file(competitor_name)
+    rename_class_folder_to_competitor_name(competitor_name)
+    move_competitor_name_from_arena_temp_to_battlecode_bin(competitor_name)  
   end
-  bin_scheduler.pause
+    
+  scheduler.pause
+#  while bin_scheduler.paused? 
+#    sleep 1
+#  end
+#  bin_scheduler.pause
   
   batch_games = get_unplayed_games()
   batch_games = get_auto_games() unless batch_games.count > 0
@@ -221,6 +232,6 @@ scheduler.every("5m") do
     handle_battlecode_game(batch_game)
   end
  
-  bin_scheduler.resume if bin_scheduler.paused?
+#  bin_scheduler.resume if bin_scheduler.paused?
   scheduler.resume if scheduler.paused?
 end
