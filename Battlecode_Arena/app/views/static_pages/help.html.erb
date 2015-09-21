@@ -12,51 +12,40 @@
     <br><br><a name="step1" class="anchor">. [invisible]</a><br><strong>1. Compiling your Submission</strong><br>
     Since we don't want to give away our clever strategies too easily, we only want to upload compiled jar files.<br>
     i.e. your code has been compiled and is no longer human readable.<br>
-    <br> a) You can download this <%= link_to "build_for_arena.xml", static_pages_build_for_arena_xml_url, :class => "themed_text" %>. 
+    <br> a) Download this <%= link_to "build_for_arena.xml", static_pages_build_for_arena_xml_url, :class => "themed_text" %>. 
     <br> b) Save it into your Battlecode Directory
-    <br> c) Run ant -buildfile build_for_arena.xml -Dteam=team arena_build
+    <br> c) Run ant -buildfile build_for_arena.xml -Dteam=team arena_build   (Where team == the package your team is currently in)
     <br><br> This will produce an arena_submission_team.jar file (of compiled code only) in your battlecode Directory
     <br> This is the file you need to upload.
     <br> Note team in the above command line is the folder in teams you are wanting to upload. 
-    <br> this name will be hidden as it will probably be your actual team name. 
-    <br> You will be able to override this with a different name if you choose.
-    
+    <br> This is the name this Competitor will be known by, so don't use teamnnn if you want to remain anonymous!
     </p>
-    <br>
     <br>
     <a name="step2" class="anchor">.</a><br><strong>2. Uploading your Submission</strong>
     <br>        Clicking on the upload Submission button will allow you to create a new submission.
-    <br>   a) You will have to name the submission 
-    <br>        (these names are unique, so you probably want to include a version number of some description)
-    <br>   b) You also have the option of adding your team name (or some sort of team name) if you'd like to declare who you are
-    <br>        I'd recommend using the team name slot, it's always more fun to know who you are up against, but the choice is yours.
-    <br>   c) Finally you have to upload your Jar file. 
+    <br>   a) Upload your Jar file. 
     <br>        You upload the arena_submission_#teamname#.jar. 
+    <br>   b) You have the option of adding your team name (or some sort of team name) if you'd like to declare who you are
+    <br>        I'd recommend using the team name slot, it's always more fun to know who you are up against, but the choice is yours. 
+    
     <br><br> <a name="step3" class="anchor">.</a><br><strong>3. Creating a Match</strong>
-    <br> by default, every submission will play every other submission
+    <br> By default, every submission will play every other submission
     <br> however, this will take some time as the numbers of submissions grow
     <br> to the point that some games may never happen within the life time of the competition.
     <br> These auto played matches, will be played in reverse uploaded time order. i.e. the latest submissions will play each other first.
-    <br> if there is a particular match you are interested in, then create a new match.
-    <br> when specifying a new match, there is a team name option. Again this can be left blank,
-    <br>but it might be interesting to see who is looking at what matches.
+    <br> If there is a particular match you are interested in, then create a new match.
+    <br> When specifying a new match, there is a team name option. Again this can be left blank,
+    <br>but it might be interesting to see who is requesting what matches.
     <br> Matches created by users are always played first. (ordered by creation time.)
     <br> so create those matches you are interested in, and leave the rest to be auto generated over time.
     
     <br><br><a name="step4" class="anchor">.</a><br><strong>4. Results</strong>
-    <br> there may well be a queue of matches to be played, but eventually matches will be displayed in the <%= link_to "View Matches",  games_path %> area
-    <br> these default to being ordered by played time (latest on top)
-    <br> clicking on them bring up more information, and the ability to download the results file.
+    <br> There may well be a queue of matches to be played, but eventually matches will be displayed in the <%= link_to "View Matches",  games_path %> area,
+    <br> these default to being ordered by played time (latest on top).
+    <br> Clicking on them brings up more information, and the ability to download the results file.
     
-   <br><br><br> <strong>wait. I'm still confused. How do I edit my submission?</strong>
-   <br> you can't. once submitted it's there for good. if you improve it, submit another one. 
-   <br> adding a version prefix, allows you and others to see the progress your submission has made, even if they don't know who's written it
-   <br><br><br> <strong>how do I remove my submission?</strong>
-   <br> you can't. it's there forever. however, if a robot has not played a match for a certain amount of time, it's deactivated. you can find it in the deactivated list.
-   <br> submissions in the deactivated list are not used during auto matches, and are not allowed to be picked to run a match with. 
-   <br> you may reactivate a submission by finding the submission in the <%= link_to "Inactive Competitors",  inactive_path %> list, and reactivating it.
    <br><br><br><strong>Why are games being played I didn't start?</strong>
-   <br> active submissions attempt to play every other submission to prove they are the best. 
-   <br> this can take a long time, so it's best to specify a few matches that you are interested in.
+   <br> Active submissions attempt to play every other submission to prove they are the best. 
+   <br> This can take a long time, so it's best to specify a few matches that you are interested in.
    <br> Note auto matches are played latest vs latest first, so it is possible that the games you are interested in are going to be played sooner rather than later.
 </p>
