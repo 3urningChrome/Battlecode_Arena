@@ -183,7 +183,7 @@ end
 
 #scheduler for creating the required Bin from competitor jar files.
 # Pause the other schedulers so we don't get knickers in a twist
-bin_scheduler.every("20s") do
+bin_scheduler.every("20h") do
   #keep other schedulers paused
   bin_scheduler.pause
   while scheduler.paused? 
@@ -206,7 +206,7 @@ end
 
 #scheduler for running the matches.
 # Pause the other schedulers so we don't get knickers in a twist
-scheduler.every("30s") do
+scheduler.every("30h") do
   #keep other schedulers paused
   scheduler.pause
   while bin_scheduler.paused? 
