@@ -26,7 +26,7 @@ def extract_jar_file(competitor_name)
   return if competitor == nil
   Dir.chdir(@arena_path) do
     puts "finding jar from: #{Rails.root}/public#{competitor.ai}"
-    %x[jar -xvf "#{Rails.root}/public#{competitor.ai}"]
+    %x[jar -xvf "../../../public#{competitor.ai}"]
   end
 end
 
