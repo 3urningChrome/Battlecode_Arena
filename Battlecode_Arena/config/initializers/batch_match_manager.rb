@@ -114,7 +114,11 @@ def run_battlecode_game(game)
   
   #run battlecode
    puts "running battlecode"
-  results = %x[ant headless -file "#{@battlecode_path}/build.xml"]
+  #results = %x[ant headless -file "#{@battlecode_path}/build.xml"]
+  results = ""
+  Dir.chdir(@battlecode_path) do
+    results = %x[java -classpath lib/battlecode-server.jar:bin battlecode.server.Main -h -c bc.conf]
+  end
   
    puts "parsing results"
   game = parse_battlecode_results_and_update_game_file(results,game)
@@ -134,7 +138,7 @@ def parse_battlecode_results_and_update_game_file(results,game)
   puts results
   winner = ""
   results.each_line do |line|
-    if (line.include?("[java] [server]") && line.include?( " wins "))
+    if (line.include?("[server]") && line.include?( " wins "))
       #text = '"'+ test_player+ '","' + opposing_team + '","' + map + '","' +  line.sub("[java] [server]","").squeeze(' ').chomp + '"'
       winner = line.split('(')[1][0,1]
     end
