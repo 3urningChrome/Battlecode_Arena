@@ -19,3 +19,5 @@
 
 #Ignore any Battlecode players:
 /bin/battlecode/match.rms
+
+/public/uploads
