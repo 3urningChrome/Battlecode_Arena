@@ -3,10 +3,6 @@
 #
 # Examples:
 #
-#   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
-#   Mayor.create(name: 'Emanuel', city: cities.first)
-#maps = Map.create([{ name: 'barren'}, { name: 'border'}, { name: 'bunker'}])
-#Dir.chdir(Rails.root) do
     Dir.foreach('bin/battlecode/maps') do |item|
         next if item == '.' or item == '..'
         Map.create({ name: item})
