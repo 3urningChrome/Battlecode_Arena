@@ -176,7 +176,7 @@ def setup_battlecode_config(game)
   end
 end
 
-scheduler.every("5m") do
+scheduler.every("30s") do
 
   scheduler.pause
   
