@@ -1,7 +1,7 @@
 # encoding: utf-8
 
 
-class AiUploader < CarrierWave::Uploader::Base
+class FileUploader < CarrierWave::Uploader::Base
 
   # Include RMagick or MiniMagick support:
   # include CarrierWave::RMagick
@@ -47,7 +47,7 @@ class AiUploader < CarrierWave::Uploader::Base
 
   # Add a white list of extensions which are allowed to be uploaded.
   def extension_white_list
-   %w(jar)
+   %w(rms)
   end
 
   # Override the filename of the uploaded files:

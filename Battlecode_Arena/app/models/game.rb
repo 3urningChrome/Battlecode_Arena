@@ -1,5 +1,5 @@
 class Game < ActiveRecord::Base
-    
+     mount_uploader :file, FileUploader
     
     before_save :create_full_team_names
     validates :teama, presence: true

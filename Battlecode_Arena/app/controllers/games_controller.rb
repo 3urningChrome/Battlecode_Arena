@@ -76,13 +76,13 @@ class GamesController < ApplicationController
     end
   end
   
-  def match_rms
-    send_file(
-      "#{Rails.root}/public/downloads/game/#{params[:game_file_path]}/match.rms",
-      filename: "match.rms",
-      type: "application/rms"
-    )
-  end
+#  def match_rms
+#    send_file(
+#      "#{Rails.root}/public/downloads/game/#{params[:game_file_path]}/match.rms",
+#      filename: "match.rms",
+#      type: "application/rms"
+#    )
+#  end
 
   private
     # Use callbacks to share common setup or constraints between actions.

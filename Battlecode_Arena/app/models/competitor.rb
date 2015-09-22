@@ -38,6 +38,8 @@ class Competitor < ActiveRecord::Base
         pre_existing_version = Competitor.where("name = ?", self.name).first
         return self if pre_existing_version.nil?
         
+        puts competitor_params
+        puts pre_existing_version
         pre_existing_version.update(competitor_params)
         pre_existing_version.increment_submission_value()
         return pre_existing_version

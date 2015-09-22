@@ -11,7 +11,7 @@ bin_scheduler = Rufus::Scheduler.new
 @battlecode_config = "#{@battlecode_path}/bc.conf"
 @battlecode_file_path = 'public/downloads/game'
 
-TIMEOUT = 90
+TIMEOUT = 300
 
 
 #Test if submission has a bin or not:
@@ -21,12 +21,12 @@ def does_bin_already_exist?(competitor_name)
 end
 
 # run extract Jar file for Submission
-def extract_jar_file(competitor_name)
-  competitor = Competitor.where("name = ?", competitor_name).first
+def extract_jar_file(competitor)
   return if competitor == nil
   Dir.chdir(@arena_path) do
-    puts "finding jar from: #{Rails.root}/public#{competitor.ai}"
-    %x[jar -xvf "../../../public#{competitor.ai}"]
+    competitor.ai.cache_stored_file!
+   puts "finding jar from: ../../../#{competitor.ai.full_cache_path}"
+    %x[jar -xvf "../../../#{competitor.ai.full_cache_path}"]
   end
 end
 
@@ -124,12 +124,7 @@ def run_battlecode_game(game)
   game = parse_battlecode_results_and_update_game_file(results,game)
   
   #make results file available for download
-  game_id = game.get_game_id
-  puts "moving from: #{@battlecode_path}/match.rms to: #{@battlecode_file_path}/#{game_id}/match.rms"
-  puts "Creating: #{@battlecode_file_path}/#{game_id}"
-  FileUtils.mkdir_p "#{@battlecode_file_path}/#{game_id}"
-  FileUtils.mv "#{@battlecode_path}/match.rms", "#{@battlecode_file_path}/#{game_id}/match.rms"
-  game.file = "#{@battlecode_file_path}/#{game_id}/match.rms"
+  game.file = (File.open("#{@battlecode_path}/match.rms"))
   game.save
 end
 
@@ -181,53 +176,24 @@ def setup_battlecode_config(game)
   end
 end
 
-#scheduler for creating the required Bin from competitor jar files.
-# Pause the other schedulers so we don't get knickers in a twist
-#bin_scheduler.every("1m") do
-#  #keep other schedulers paused
-#  bin_scheduler.pause
-#  while scheduler.paused? 
-#    sleep 1
-#  end
-#  scheduler.pause
-#  
-#  competitors = Competitor.all
-#  competitors.each do |competitor|
-#    puts competitor_name = competitor.name
-#    if not does_bin_already_exist?(competitor_name) then
-#      extract_jar_file(competitor_name)
-#      rename_class_folder_to_competitor_name(competitor_name)
-#      move_competitor_name_from_arena_temp_to_battlecode_bin(competitor_name)
-#    end
-#  end
-#  bin_scheduler.resume if bin_scheduler.paused?
-#  scheduler.resume if scheduler.paused?
-#end
+scheduler.every("5m") do
 
-#scheduler for running the matches.
-# Pause the other schedulers so we don't get knickers in a twist
-scheduler.every("1m") do
-  #keep other schedulers paused
+  scheduler.pause
   
-  competitors = Competitor.all
   FileUtils.rm_rf(@battlecode_bin_path)
   FileUtils.mkdir(@battlecode_bin_path)
-  competitors.each do |competitor|
-    puts competitor_name = competitor.name
-    extract_jar_file(competitor_name)
-    rename_class_folder_to_competitor_name(competitor_name)
-    move_competitor_name_from_arena_temp_to_battlecode_bin(competitor_name)  
-  end
-    
-  scheduler.pause
-#  while bin_scheduler.paused? 
-#    sleep 1
-#  end
-#  bin_scheduler.pause
   
   batch_games = get_unplayed_games()
   batch_games = get_auto_games() unless batch_games.count > 0
   batch_games.each do |batch_game|
+    [batch_game.teama,batch_game.teamb].each do |team_name|
+      if not does_bin_already_exist?(team_name)
+        extract_jar_file(Competitor.where("name = ?",team_name).first)
+        rename_class_folder_to_competitor_name(team_name)
+        move_competitor_name_from_arena_temp_to_battlecode_bin(team_name)
+      end
+    end
+
     batch_game.create_full_team_names()
     handle_battlecode_game(batch_game)
   end
