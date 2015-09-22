@@ -9,7 +9,9 @@ bin_scheduler = Rufus::Scheduler.new
 #  process
 #end
 #
+puts "Rails production? #{Rails.env.production?}"
 if Rails.env.production?
+  puts "Dyno? #{ENV['DYNO']}"
   if ENV['DYNO'].match(/^web\./)
     scheduler.every("30s") do
 
