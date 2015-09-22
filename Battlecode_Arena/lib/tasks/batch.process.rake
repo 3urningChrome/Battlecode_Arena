@@ -176,21 +176,23 @@ task :battlecode_arena_batch => :environment  do
   end
 
 puts "about to start Processing"
-  FileUtils.rm_rf(@battlecode_bin_path)
-  FileUtils.mkdir(@battlecode_bin_path)
+  while true do
+    FileUtils.rm_rf(@battlecode_bin_path)
+    FileUtils.mkdir(@battlecode_bin_path)
   
-  batch_games = get_unplayed_games()
-  batch_games = get_auto_games() unless batch_games.count > 0
-  batch_games.each do |batch_game|
-    [batch_game.teama,batch_game.teamb].each do |team_name|
-      if not does_bin_already_exist?(team_name)
-        extract_jar_file(Competitor.where("name = ?",team_name).first)
-        rename_class_folder_to_competitor_name(team_name)
-        move_competitor_name_from_arena_temp_to_battlecode_bin(team_name)
+    batch_games = get_unplayed_games()
+    batch_games = get_auto_games() unless batch_games.count > 0
+    batch_games.each do |batch_game|
+      [batch_game.teama,batch_game.teamb].each do |team_name|
+        if not does_bin_already_exist?(team_name)
+          extract_jar_file(Competitor.where("name = ?",team_name).first)
+          rename_class_folder_to_competitor_name(team_name)
+          move_competitor_name_from_arena_temp_to_battlecode_bin(team_name)
+        end
       end
+        batch_game.create_full_team_names()
+      handle_battlecode_game(batch_game)
     end
-      batch_game.create_full_team_names()
-    handle_battlecode_game(batch_game)
+    puts "finished processing"
   end
-  puts "finished processing"
 end
