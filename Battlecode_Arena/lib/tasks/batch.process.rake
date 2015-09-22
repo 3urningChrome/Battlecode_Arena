@@ -194,5 +194,6 @@ puts "about to start Processing"
       handle_battlecode_game(batch_game)
     end
     puts "finished processing"
+    sleep 8
   end
 end

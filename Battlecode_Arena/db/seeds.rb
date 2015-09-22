@@ -5,7 +5,13 @@
 #
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
-maps = Map.create([{ name: 'barren'}, { name: 'border'}, { name: 'bunker'}])
+#maps = Map.create([{ name: 'barren'}, { name: 'border'}, { name: 'bunker'}])
+#Dir.chdir(Rails.root) do
+    Dir.foreach('bin/battlecode/maps') do |item|
+        next if item == '.' or item == '..'
+        Map.create({ name: item})
+    end
+#end
 
 
 #Competitor.create :name => "Destroyer", :team => "Team1", :active => true, :ai  => File.open(File.join(Rails.root, 'test.jar')), :Elo => 1500, :wins => 0, :losses => 0
