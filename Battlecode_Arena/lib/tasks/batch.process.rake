@@ -190,7 +190,7 @@ puts "about to start Processing"
           move_competitor_name_from_arena_temp_to_battlecode_bin(team_name)
         end
       end
-        batch_game.create_full_team_names()
+      batch_game.create_full_team_names()
       handle_battlecode_game(batch_game)
     end
     puts "finished processing"
