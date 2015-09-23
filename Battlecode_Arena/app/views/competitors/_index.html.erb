@@ -3,7 +3,6 @@
     <tr>
       <th>Name</th>
       <th>Team</th>
-      <th>Elo</th>
       <th>Wins</th>
       <th>Losses</th>
       <th colspan="3"></th>
@@ -16,7 +15,6 @@
         <% shown_name = competitor.broken ? "#{competitor.name} - Broken" : competitor.name %>
         <td class="tbody"><%= link_to shown_name, competitor %></td>
         <td class="tbody"><%= competitor.team %></td>
-        <td class="tbody"><%= competitor.Elo %></td>
         <td class="tbody"><%= competitor.wins %></td>
         <td class="tbody"><%= competitor.losses %></td>
       </tr>
