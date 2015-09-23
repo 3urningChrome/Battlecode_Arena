@@ -44,6 +44,8 @@ gem 'bootstrap-will_paginate'
 gem 'unicorn'
 
 gem 'rack-timeout'
+
+gem 'newrelic_rpm'
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 
