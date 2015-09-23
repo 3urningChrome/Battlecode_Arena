@@ -30,18 +30,22 @@ class Competitor < ActiveRecord::Base
     end
     
     def increment_submission_value()
-        self.submission +=1
+        self.submission = self.submission + 1
         self.full_name = get_full_name()
+        self.wins = 0
+        self.losses = 0
+        self.save
     end
 
-    def update_to_pre_existing_version(competitor_params)
+    def update_to_pre_existing_version()
         pre_existing_version = Competitor.where("name = ?", self.name).first
         return self if pre_existing_version.nil?
         
-        puts competitor_params
-        puts pre_existing_version
-        pre_existing_version.update(competitor_params)
-        pre_existing_version.increment_submission_value()
+#        puts competitor_params
+#        puts pre_existing_version
+#        pre_existing_version.increment_submission_value()
+#        pre_existing_version.update(competitor_params)
+
         return pre_existing_version
     end
     

@@ -36,7 +36,7 @@ class CompetitorsController < ApplicationController
     respond_to do |format|
       if @competitor.check_for_pre_existing_version then
         #pre-existing version. warn, and update.
-        @competitor = @competitor.update_to_pre_existing_version(competitor_params)
+        @competitor = @competitor.update_to_pre_existing_version()
         format.html { render :edit }
       else        
         if @competitor.save
@@ -55,6 +55,7 @@ class CompetitorsController < ApplicationController
   def update
     respond_to do |format|
       if @competitor.update(competitor_params)
+        @competitor.increment_submission_value()
         format.html { redirect_to @competitor, notice: 'Competitor was successfully updated.' }
         format.json { render :show, status: :ok, location: @competitor }
       else
