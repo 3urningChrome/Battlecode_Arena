@@ -1,6 +1,6 @@
 # Battlecode_Arena
 
-(Currently running 2015 on: https://battlecode-arena.herokuapp.com)
+(Currently running 2015 on: https://battlecode-arena.herokuapp.com - beta)
 if anyone stumbles accross this, please have a go. feedback welcome
 
 Submit a competitor and have it fight any opponent on any map. 
