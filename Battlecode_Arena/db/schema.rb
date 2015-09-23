@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150918133834) do
+ActiveRecord::Schema.define(version: 20150923091856) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -53,6 +53,8 @@ ActiveRecord::Schema.define(version: 20150918133834) do
   end
 
   add_index "games", ["full_name_a", "full_name_b", "map"], name: "index_games_on_full_name_a_and_full_name_b_and_map", unique: true, using: :btree
+  add_index "games", ["full_name_a"], name: "index_games_on_full_name_a", using: :btree
+  add_index "games", ["full_name_b"], name: "index_games_on_full_name_b", using: :btree
 
   create_table "maps", force: :cascade do |t|
     t.string   "name"
