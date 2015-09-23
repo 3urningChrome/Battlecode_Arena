@@ -4,7 +4,7 @@ class GamesController < ApplicationController
   # GET /games
   # GET /games.json
   def index
-    @games = Game.all.order(:updated_at).reverse_order
+    @games = Game.all.order(:updated_at).reverse_order.first(100)
   end
 
   # GET /games/1
