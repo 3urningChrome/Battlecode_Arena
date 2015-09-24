@@ -1,7 +1,7 @@
 # Battlecode_Arena
 
 (Currently running 2015 on: https://battlecode-arena.herokuapp.com - beta)
-if anyone stumbles accross this, please have a go. feedback welcome
+if anyone stumbles across this, please have a go. feedback welcome
 
 Submit a competitor and have it fight every opponent on every map. 
 Submissions can be anonymous, or you can proudly claim it as yours.
