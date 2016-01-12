@@ -188,6 +188,20 @@
     <jar destfile="${team}-submission.jar" basedir="${path.src}" includes="${team}/**/*.java,${team}/**/*.scala"/>
   </target>
 
+  <target name="arena_build" depends="build">
+    <fail unless:set="team">
+    run as "ant -Dteam=name arena_build" where "name" is a folder in your teams folder.
+    </fail>
+    <available file="${path.src}/${team}" property="team.exists"/>
+    <fail unless="team.exists">
+      You can't jar a team that doesn't exist!
+    </fail>
+    <available file="${team}-submission.jar" property="team.jar.exists"/>
+    <echo message="arena_submission_${team}.jar already exists, deleting" if:set="team.jar.exists"/>
+    <delete file="arena_submission_${team}.jar" if:set="team.jar.exists"/>
+    <jar destfile="arena_submission_${team}.jar" basedir="${path.src}" includes="${team}/**/*.class"/>
+  </target>
+  
   <target name="mapeditor" description="Run the map editor.">
     <java classpathref="classpath.run" fork="yes" classname="battlecode.mapeditor.st3"/>
   </target>

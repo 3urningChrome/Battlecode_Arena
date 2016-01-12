@@ -5,7 +5,7 @@ end
 task :battlecode_arena_batch => :environment  do
   @arena_path = 'bin/battlecode/arena_temp'
   @battlecode_path = 'bin/battlecode'
-  @battlecode_bin_path = 'bin/battlecode/bin'
+  @battlecode_bin_path = 'bin/battlecode/bin/main'
   @output_path = File.join(@battlecode_path, 'log')
   @battlecode_config = "#{@battlecode_path}/bc.conf"
   @battlecode_file_path = 'public/downloads/game'
@@ -15,7 +15,7 @@ task :battlecode_arena_batch => :environment  do
 
   #Test if submission has a bin or not:
   def does_bin_already_exist?(competitor_name)
-    return true if File.exists?("#{@battlecode_path}/bin/#{competitor_name}")
+    return true if File.exists?("#{@battlecode_bin_path}/#{competitor_name}")
     return false
   end
 
