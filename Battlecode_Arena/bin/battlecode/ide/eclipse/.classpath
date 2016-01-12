@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="test"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="E:/G Drive/Programming projects/BattleCode/Battlecode2016/lib/battlecode.jar"/>
+	<classpathentry kind="lib" path="E:/G Drive/Programming projects/BattleCode/Battlecode2016/lib/battlecode-javadoc.jar"/>
+	<classpathentry kind="lib" path="E:/G Drive/Programming projects/BattleCode/Battlecode2016/lib/battlecode-mapeditor.jar"/>
+	<classpathentry kind="lib" path="E:/G Drive/Programming projects/BattleCode/Battlecode2016/lib/hamcrest-core.jar"/>
+	<classpathentry kind="lib" path="E:/G Drive/Programming projects/BattleCode/Battlecode2016/lib/junit.jar"/>
+	<classpathentry kind="lib" path="E:/G Drive/Programming projects/BattleCode/Battlecode2016/lib/junit-javadoc.jar"/>
+	<classpathentry kind="lib" path="E:/G Drive/Programming projects/BattleCode/Battlecode2016/lib/scala-compiler.jar"/>
+	<classpathentry kind="lib" path="E:/G Drive/Programming projects/BattleCode/Battlecode2016/lib/scala-library.jar"/>
+	<classpathentry kind="lib" path="E:/G Drive/Programming projects/BattleCode/Battlecode2016/lib/scala-parser-combinators_2.11.jar"/>
+	<classpathentry kind="lib" path="E:/G Drive/Programming projects/BattleCode/Battlecode2016/lib/scala-reflect.jar"/>
+	<classpathentry kind="lib" path="E:/G Drive/Programming projects/BattleCode/Battlecode2016/lib/scala-xml_2.11.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
