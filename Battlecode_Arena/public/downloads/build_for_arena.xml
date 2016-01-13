@@ -188,7 +188,7 @@
     <jar destfile="${team}-submission.jar" basedir="${path.src}" includes="${team}/**/*.java,${team}/**/*.scala"/>
   </target>
   
-  <target name="jar" depends="arena_build" description="Package a player for uploading to Battlecode_arena.">
+  <target name="arena_build" description="Package a player for uploading to Battlecode_arena.">
     <fail unless:set="team">
       Run as "ant -Dteam=name arena_build" where "name" is a folder in your teams folder.
     </fail>
@@ -199,7 +199,7 @@
     <available file="arena_submission_${team}.jar" property="team.jar.exists"/>
     <echo message="arena_submission_${team}.jar already exists, deleting" if:set="team.jar.exists"/>
     <delete file="arena_submission_${team}.jar" if:set="team.jar.exists"/>
-    <jar destfile="arena_submission_${team}.jar" basedir="${path.bin.main}" includes="${team}/**/*.class">
+    <jar destfile="arena_submission_${team}.jar" basedir="${path.bin.main}" includes="${team}/**/*.class"/>
   </target>
 
   <target name="mapeditor" description="Run the map editor.">
