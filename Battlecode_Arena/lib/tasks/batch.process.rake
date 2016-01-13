@@ -177,8 +177,8 @@ task :battlecode_arena_batch => :environment  do
 
 puts "about to start Processing"
   while true do
-    FileUtils.rm_rf(@battlecode_bin_path)
-    FileUtils.mkdir(@battlecode_bin_path)
+#    FileUtils.rm_rf(@battlecode_bin_path)
+#    FileUtils.mkdir(@battlecode_bin_path)
   
     batch_games = get_unplayed_games()
     batch_games = get_auto_games() unless batch_games.count > 0
