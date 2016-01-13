@@ -116,7 +116,7 @@ task :battlecode_arena_batch => :environment  do
     #results = %x[ant headless -file "#{@battlecode_path}/build.xml"]
     results = ""
     Dir.chdir(@battlecode_path) do
-      results = %x[java -classpath lib/battlecode-server.jar:bin battlecode.server.Main -h -c bc.conf]
+      results = %x[java -classpath lib/battlecode.jar:bin battlecode.server.Main -h -c bc.conf]
     end
   
     puts "parsing results"
@@ -177,8 +177,8 @@ task :battlecode_arena_batch => :environment  do
 
 puts "about to start Processing"
   while true do
-#    FileUtils.rm_rf(@battlecode_bin_path)
-#    FileUtils.mkdir(@battlecode_bin_path)
+    FileUtils.rm_rf(@battlecode_bin_path)
+    FileUtils.mkdir(@battlecode_bin_path)
   
     batch_games = get_unplayed_games()
     batch_games = get_auto_games() unless batch_games.count > 0
