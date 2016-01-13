@@ -20,6 +20,6 @@
 #Ignore any Battlecode players:
 /bin/battlecode/match.rms
 
-/bin/battlecode/bin
+#/bin/battlecode/bin
 
 /public/uploads
