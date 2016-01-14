@@ -2,6 +2,7 @@ task :ring do
   puts "Bell is ringing."
 end
 
+# needs java 1.8
 task :battlecode_arena_batch => :environment  do
   @arena_path = 'bin/battlecode/arena_temp'
   @battlecode_path = 'bin/battlecode'
@@ -11,7 +12,6 @@ task :battlecode_arena_batch => :environment  do
   @battlecode_file_path = 'public/downloads/game'
 
   TIMEOUT = 300
-
 
   #Test if submission has a bin or not:
   def does_bin_already_exist?(competitor_name)
