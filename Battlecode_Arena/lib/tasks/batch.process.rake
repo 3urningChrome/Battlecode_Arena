@@ -116,7 +116,7 @@ task :battlecode_arena_batch => :environment  do
     #results = %x[ant headless -file "#{@battlecode_path}/build.xml"]
     results = ""
     Dir.chdir(@battlecode_path) do
-      results = %x[java -classpath lib/battlecode.jar:bin battlecode.server.Main -h -c bc.conf]
+      results = %x[java -classpath lib/battlecode.jar;bin battlecode.server.Main -h -c bc.conf]
     end
   
     puts "parsing results"
