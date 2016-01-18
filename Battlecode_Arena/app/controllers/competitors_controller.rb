@@ -55,7 +55,11 @@ class CompetitorsController < ApplicationController
   def update
     respond_to do |format|
       if @competitor.update(competitor_params)
+        Game.where("full_name_a = ? OR full_name_b = ?", @competitor.get_full_name(), @competitor.get_full_name()).destroy_all
         @competitor.increment_submission_value()
+        #delete old games
+        
+        #remove old match files?
         format.html { redirect_to @competitor, notice: 'Competitor was successfully updated.' }
         format.json { render :show, status: :ok, location: @competitor }
       else
