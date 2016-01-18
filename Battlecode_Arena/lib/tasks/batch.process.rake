@@ -51,7 +51,7 @@ task :battlecode_arena_batch => :environment  do
   #Generate games between competitors who have not yet played
   def get_auto_games()
     batch_games = Array.new
-    batch_competitors = Competitor.where("active = ?", true).order(:updated_at).reverse_order.first(3)
+    batch_competitors = Competitor.where("active = ?", true).order(:updated_at).reverse_order
     maps = Map.all
     batch_competitors.each do |teama|
       batch_competitors.each do |teamb|
