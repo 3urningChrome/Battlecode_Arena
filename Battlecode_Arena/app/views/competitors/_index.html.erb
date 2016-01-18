@@ -15,8 +15,8 @@
         <% shown_name = competitor.broken ? "#{competitor.name} - Broken" : competitor.name %>
         <td class="tbody"><%= link_to shown_name, competitor %></td>
         <td class="tbody"><%= competitor.team %></td>
-        <td class="tbody"><%= competitor.wins %></td>
-        <td class="tbody"><%= competitor.losses %></td>
+        <td class="tbody"><%= competitor.get_number_of_games_won() %></td>
+        <td class="tbody"><%= competitor.get_number_of_games_lost() %></td>
       </tr>
     <% end %>
   </tbody>

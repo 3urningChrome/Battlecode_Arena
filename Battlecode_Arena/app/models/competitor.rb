@@ -61,10 +61,10 @@ class Competitor < ActiveRecord::Base
     end
     
     def get_number_of_games_won()
-       return Game.where("(full_name_a = ? OR full_name_b = ?) AND winner = ?", get_full_name(),get_full_name(),self.competitor_name).count
+       return Game.where("(full_name_a = ? OR full_name_b = ?) AND winner = ?", self.get_full_name(),self.get_full_name(),self.name).count
     end
     
     def get_number_of_games_lost()
-       return Game.where("(full_name_a = ? OR full_name_b = ?) AND winner != ?", get_full_name(),get_full_name(),self.competitor_name).count
+       return Game.where("(full_name_a = ? OR full_name_b = ?) AND winner != ?", self.get_full_name(),self.get_full_name(),self.name).count
     end
 end

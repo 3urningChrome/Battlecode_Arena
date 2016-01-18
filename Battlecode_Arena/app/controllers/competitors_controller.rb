@@ -55,7 +55,7 @@ class CompetitorsController < ApplicationController
   def update
     respond_to do |format|
       if @competitor.update(competitor_params)
-       # Game.where("full_name_a = ? OR full_name_b = ?", @competitor.get_full_name(), @competitor.get_full_name()).destroy_all
+       Game.where("teama_a = ? OR teamb = ?", @competitor.name, @competitor.name).destroy_all
         @competitor.increment_submission_value()
         #delete old games
         
