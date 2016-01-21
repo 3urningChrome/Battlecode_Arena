@@ -11,7 +11,7 @@ task :battlecode_arena_batch => :environment  do
   @battlecode_config = "#{@battlecode_path}/bc.conf"
   @battlecode_file_path = 'public/downloads/game'
 
-  TIMEOUT = 450
+  TIMEOUT = 800
 
   #Test if submission has a bin or not:
   def does_bin_already_exist?(competitor_name)
