@@ -5,7 +5,7 @@
 #
     Dir.foreach('bin/battlecode/maps') do |item|
         next if item == '.' or item == '..'
-        Map.create({ name: item})
+        Map.create({ name: item.split('.')[0]})
     end
 #end
 
